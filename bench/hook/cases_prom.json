@@ -1,0 +1,107 @@
+[
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/engine.go",
+  "lines": 5020,
+  "line": 643,
+  "goal": "where a query is rejected up front because it uses a language feature that has not been switched on in this build"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/engine.go",
+  "lines": 5020,
+  "line": 1245,
+  "goal": "how a panic raised deep inside expression evaluation is caught and converted into an error returned to the caller"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/engine.go",
+  "lines": 5020,
+  "line": 2811,
+  "goal": "picking the one sample to use for a series at a given evaluation timestamp, including giving up when the newest sample is older than the lookback window or is a staleness marker"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/engine.go",
+  "lines": 5020,
+  "line": 3489,
+  "goal": "applying an arithmetic or comparison operator between a set of series on one side and a single constant number on the other"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/engine.go",
+  "lines": 5020,
+  "line": 4791,
+  "goal": "deciding that a query only needs a histogram's count and sum so the buckets can be skipped while decoding chunks"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "tsdb/head.go",
+  "lines": 3280,
+  "line": 287,
+  "goal": "constructing the in-memory block that holds the newest data, wiring up its metrics, chunk disk mapper and series stripes"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "tsdb/head.go",
+  "lines": 3280,
+  "line": 998,
+  "goal": "on startup, walking the chunk files already written to disk and reattaching each of those chunks to the series it belongs to"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "tsdb/head.go",
+  "lines": 3280,
+  "line": 1644,
+  "goal": "writing a checkpoint and deleting the write-ahead-log segments that are no longer needed after data older than a cutoff was dropped"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "tsdb/head.go",
+  "lines": 3280,
+  "line": 2254,
+  "goal": "periodically moving completed in-memory chunks of live series out to memory-mapped files to free up heap"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "tsdb/head.go",
+  "lines": 3280,
+  "line": 3094,
+  "goal": "dropping the chunks of one series that end entirely before the retention cutoff"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/functions.go",
+  "lines": 2894,
+  "line": 452,
+  "goal": "the per-second calculation that stretches the observed values out to the two edges of the range window when samples do not line up with the window boundaries"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/functions.go",
+  "lines": 2894,
+  "line": 830,
+  "goal": "computing a change from only the final two samples in the window instead of the whole window"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/functions.go",
+  "lines": 2894,
+  "line": 1438,
+  "goal": "the median absolute deviation aggregation over the samples in a range"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/functions.go",
+  "lines": 2894,
+  "line": 2020,
+  "goal": "extrapolating a series forward to guess its value a given number of seconds from now using a least-squares fit"
+ },
+ {
+  "repo": "/tmp/prometheus",
+  "file": "promql/functions.go",
+  "lines": 2894,
+  "line": 2848,
+  "goal": "building the label set to attach to the synthetic result returned when a selector matched nothing"
+ }
+]

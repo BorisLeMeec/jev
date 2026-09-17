@@ -1,0 +1,14 @@
+{
+  "name": "jev",
+  "description": "Out-of-context code search, audits and review for Claude Code, powered by the TypeSafe Jev model.",
+  "owner": {
+    "name": "Boris Lemeec"
+  },
+  "plugins": [
+    {
+      "name": "jev",
+      "description": "Find code by describing it, and ask yes/no questions about files, without pulling them into the agent's context.",
+      "source": "./"
+    }
+  ]
+}

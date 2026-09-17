@@ -1,0 +1,177 @@
+[
+ {
+  "repo": "/tmp/hugo",
+  "file": "tpl/tplimpl/templatestore.go",
+  "lines": 2237,
+  "line": 328,
+  "goal": "where a template searches upward through parent directories to find the base/wrapper layout it should be nested inside"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "tpl/tplimpl/templatestore.go",
+  "lines": 2237,
+  "line": 796,
+  "goal": "how we report which templates in the project were never executed during a build"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "tpl/tplimpl/templatestore.go",
+  "lines": 2237,
+  "line": 1091,
+  "goal": "where the templates that ship built into the binary get loaded into the store"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "tpl/tplimpl/templatestore.go",
+  "lines": 2237,
+  "line": 1657,
+  "goal": "the step that turns the raw template source text into parsed template trees"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "tpl/tplimpl/templatestore.go",
+  "lines": 2237,
+  "line": 2073,
+  "goal": "how we decide which candidate wins when several templates match the same lookup"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/site.go",
+  "lines": 1793,
+  "line": 135,
+  "goal": "turning a site's language/version/role coordinates into human-readable names, used only for debug output"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/site.go",
+  "lines": 1793,
+  "line": 626,
+  "goal": "looking up a site axis value by its name string and panicking on an unknown name"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/site.go",
+  "lines": 1793,
+  "line": 1045,
+  "goal": "resolving a ref/relref shortcode argument into an actual URL, logging when the target page cannot be found"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/site.go",
+  "lines": 1793,
+  "line": 1248,
+  "goal": "working out, for each watcher notification, whether the file was actually created or deleted (handling editors that only send a rename)"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/site.go",
+  "lines": 1793,
+  "line": 1631,
+  "goal": "executing a page's template into a buffer and writing the resulting bytes to the output target"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "livereload/livereload.js",
+  "lines": 3795,
+  "line": 622,
+  "goal": "the feature-detection helper that runs a snippet to see whether a built-in properly closes an iterator when iteration is cut short"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "livereload/livereload.js",
+  "lines": 3795,
+  "line": 1142,
+  "goal": "the guard that raises a TypeError when someone passes a regular expression to a string search method"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "livereload/livereload.js",
+  "lines": 3795,
+  "line": 1877,
+  "goal": "the polyfill implementing the string method that reports whether one string contains another"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "livereload/livereload.js",
+  "lines": 3795,
+  "line": 2361,
+  "goal": "how the browser queues another attempt to reach the dev server after the connection drops, backing off longer each time"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "livereload/livereload.js",
+  "lines": 3795,
+  "line": 3430,
+  "goal": "swapping in updated CSS in place by re-pointing the page's stylesheet link tags instead of doing a full page refresh"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/content_map_page_assembler.go",
+  "lines": 1498,
+  "line": 102,
+  "goal": "where the whole page-building pass is kicked off and, once it finishes, pages that were dropped (drafts/expired/future) and taxonomy terms that disappeared get deleted from the trees"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/content_map_page_assembler.go",
+  "lines": 1498,
+  "line": 463,
+  "goal": "while walking the content tree, how do we notice there is no home page in the site and synthesize one on the fly"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/content_map_page_assembler.go",
+  "lines": 1498,
+  "line": 711,
+  "goal": "when walking resource files, how do we work out that a file actually belongs to some other bundle further down and skip over it instead of attaching it here"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/content_map_page_assembler.go",
+  "lines": 1498,
+  "line": 1067,
+  "goal": "how do taxonomy listing pages and individual term pages get their dates and last-modified rolled up from the pages that belong to them"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "hugolib/content_map_page_assembler.go",
+  "lines": 1498,
+  "line": 1416,
+  "goal": "where the built-in generated output pages like sitemap.xml and robots.txt are added when the user has not supplied their own"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "internal/js/esbuild/batch.go",
+  "lines": 1439,
+  "line": 152,
+  "goal": "where we check that a user-supplied batch or script identifier is acceptable - rejecting blanks, backslashes and nested slashes"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "internal/js/esbuild/batch.go",
+  "lines": 1439,
+  "line": 427,
+  "goal": "the real work of bundling a batch: collecting every group's scripts and runners, generating the entry point, invoking the bundler and writing the output files to the publish dir"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "internal/js/esbuild/batch.go",
+  "lines": 1439,
+  "line": 728,
+  "goal": "on a rebuild, how do we garbage-collect the script groups and scripts that were not re-registered during this round"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "internal/js/esbuild/batch.go",
+  "lines": 1439,
+  "line": 1019,
+  "goal": "where we register the entry function that will be handed a group's scripts to execute, defaulting its export name to the module default"
+ },
+ {
+  "repo": "/tmp/hugo",
+  "file": "internal/js/esbuild/batch.go",
+  "lines": 1439,
+  "line": 1304,
+  "goal": "where a single script's raw option map - its resource, import context, export name and params - is decoded into the typed struct"
+ }
+]

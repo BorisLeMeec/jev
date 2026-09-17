@@ -1,0 +1,8 @@
+bin/
+.jev/
+*.log
+bench/**/results*.json
+bench/**/bench_results.json
+.idea/
+.vscode/
+.DS_Store
