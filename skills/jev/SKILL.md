@@ -42,6 +42,23 @@ $ jev find "where is the register flow"
 Go straight to those lines with `Read` and an `offset`. Do not re-read the whole
 file to confirm — that gives back exactly the tokens this saved.
 
+**Pass a directory whenever you can narrow one.** The second argument is the
+main control on how long the call takes, because `find` sends one request per
+file and the service caps requests per minute — so the wall-clock is linear in
+the number of files, at roughly 60 ms each, and no amount of concurrency moves
+it. Measured on a 127-file repository:
+
+| | files | time |
+|---|---:|---:|
+| `jev find "…"` | 127 | 9.4 s |
+| `jev find "…" internal/` | 8 | **2.5 s** |
+
+About 2 s of that is a floor — the verify and locate passes — so narrowing below
+a handful of files buys nothing. Scope on what the request already tells you: a
+backend concern rarely lives in `mobile/`, a screen rarely lives in `internal/`.
+When there is no such clue, search the whole tree; a wrong scope costs a second
+search, which is worse than the seconds it saved.
+
 ### ask
 
 ```
