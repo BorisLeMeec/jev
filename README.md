@@ -6,9 +6,15 @@ A Claude Code plugin backed by [TypeSafe](https://typesafe.ai)'s Jev — a small
 model that returns calibrated probabilities instead of prose, at $0.042 per
 million tokens. It reads your files so the agent doesn't have to.
 
+![jev intercepting a Claude Code session](docs/demo.gif)
+
+*Every turn is checked. Only searches and large reads are taken over — an
+`Update`, a `Bash`, a file under 400 lines pass straight through. The panels
+in it are a diagram, not the UI: the plugin is a hook and draws nothing.*
+
 ```
 $ jev find "where is the register flow"
-130 files scanned, 4 match:
+127 files scanned, 4 match:
   0.95  internal/app/api.go:81
   0.95  mobile/lib/screens/join.dart:71
   0.95  internal/app/app.go:341
@@ -59,6 +65,8 @@ later request. Measured across nine real Claude Code sessions:
 Average context re-sent per turn: **183,740 tokens**. Tool output was **0.04%**
 of the total.
 
+![context re-sent vs tool output](docs/context.png)
+
 So shrinking tool output is not where the savings are. A 3k-token file read with
 100 turns to go costs ~300k tokens before the session ends. Keeping those bytes
 **out of context in the first place** is the lever.
@@ -75,6 +83,8 @@ On queries whose wording never appears in the code — the case this exists for 
 grep and BM25 both collapse to **0.08** P@1 while jev holds **0.92**. Each tool
 carries its full evidence [below](#what-you-get), and every
 number links to the file it came from.
+
+![paired agent runs, grep-only against jev](docs/benchmark.png)
 
 **These tools save tokens, not time.** Wall-clock is a wash: the ~13 s a `find`
 costs roughly cancels the turns it removes. The tokens those turns would have
@@ -94,6 +104,8 @@ jev find "rate limiting" --min 0.8 -n 5
 Every file is screened from its declarations, the leading candidates are
 re-scored against their full contents, then the winners are split into chunks to
 find the line. A score marked `~` skipped verification.
+
+![jev find against grep and BM25](docs/find.png)
 
 **Measured** — 30 queries, 3 repositories, 2 of them never opened during
 development ([`RESULTS.md`](bench/RESULTS.md)):
@@ -137,6 +149,8 @@ jev ask "does this handler verify the caller's identity?" api/ -q
 ```
 
 Sweeps a directory and returns only the files that answer yes, with the line.
+
+![jev ask against a developer's regex](docs/ask.png)
 
 **Measured** — 9 questions, 217 per-file judgments, against the regex the
 labelling agent said a developer would try first
