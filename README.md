@@ -217,6 +217,17 @@ nothing, and it never touches a read where you gave an explicit `offset`.
 split into sections, and recall falls to 8/11 because confidences from different
 sections are not comparable — so such files are refused rather than narrowed.
 
+Over a session the saving compounds, because every later turn re-reads what the
+earlier ones read:
+
+![context per turn, with and without the Read hook, over 15 turns](docs/context-growth.png)
+
+*Measured, not projected: four Claude Code sessions (Haiku 4.5), two per arm,
+15 prompts each, every prompt reading a Go standard-library file between 400
+lines and 80 KB — the case the hook is built for. 15/15 correct answers in every
+session, and no extra tool calls with jev (15 per session, against 17 without).
+A session that reads fewer large files will see a smaller gap.*
+
 ## Benchmarks
 
 Everything below was labelled by agents that read the code themselves and were
