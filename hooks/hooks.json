@@ -1,14 +1,16 @@
 {
-  "PreToolUse": [
-    {
-      "matcher": "Read",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/bin/jev hook read",
-          "timeout": 20
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/bin/jev hook read",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
 }

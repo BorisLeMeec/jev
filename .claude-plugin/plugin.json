@@ -15,7 +15,6 @@
     "hooks"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "homepage": "https://github.com/BorisLeMeec/jev",
   "repository": "https://github.com/BorisLeMeec/jev"
 }
