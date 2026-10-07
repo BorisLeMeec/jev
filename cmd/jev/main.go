@@ -70,5 +70,6 @@ commands:
   jev ask "does this retry on failure?" internal/app/api.go
   jev gain
 
-Set TYPE_SAFE_AI_KEY in your environment. Run "jev <command> -h" for flags.
+Set TYPE_SAFE_AI_KEY, or an OpenRouter key (JEV_OPENROUTER_API_KEY or the
+"jev-openrouter" macOS keychain item). Run "jev <command> -h" for flags.
 `

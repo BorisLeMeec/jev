@@ -130,7 +130,8 @@ is never second-guessed. Measured: 50 narrowed windows, none lost its target.
 
 ## Setup
 
-Needs `TYPE_SAFE_AI_KEY` in the environment. If a command reports a missing key,
+Needs `TYPE_SAFE_AI_KEY`, or an OpenRouter key in `JEV_OPENROUTER_API_KEY` or
+the `jev-openrouter` macOS keychain item (served as `typesafe/jev-1.13`). If a command reports a missing key,
 tell the user rather than falling back to reading every file silently.
 
 Run `jev probe` once after installing to confirm the API contract, and

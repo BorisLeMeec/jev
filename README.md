@@ -29,7 +29,8 @@ That repository contains the string `register` **zero times**. The flow is calle
 
 ## Install
 
-Needs Go 1.22+ and a [TypeSafe API key](https://typesafe.ai).
+Needs Go 1.22+ and a [TypeSafe API key](https://typesafe.ai) or an
+[OpenRouter](https://openrouter.ai) key.
 
 ```bash
 claude plugin marketplace add BorisLeMeec/jev
@@ -41,6 +42,19 @@ Then, once:
 ```bash
 export TYPE_SAFE_AI_KEY=...   # put this in your shell profile
 ```
+
+**Or through OpenRouter.** OpenRouter serves Jev as `typesafe/jev-1.13` at
+`/api/v1/systemone`, with the same request and response contract. With no
+TypeSafe key set, jev uses an OpenRouter key from `JEV_OPENROUTER_API_KEY` or
+`OPENROUTER_API_KEY`, or on macOS from the login keychain, so hooks find it in
+any repository without a dotfile:
+
+```bash
+security add-generic-password -U -a "$USER" -s jev-openrouter -w   # prompts for the key
+```
+
+A TypeSafe key wins when both are present. `JEV_ENDPOINT` and `JEV_MODEL`
+override either backend.
 
 To use `jev` from your own terminal too (the plugin only puts it on `PATH`
 inside Claude Code):

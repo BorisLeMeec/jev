@@ -14,32 +14,92 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
 )
 
 const (
-	endpoint     = "https://api.typesafe.ai/v1/systemone"
-	DefaultModel = "jev-latest"
+	typesafeEndpoint   = "https://api.typesafe.ai/v1/systemone"
+	openrouterEndpoint = "https://openrouter.ai/api/v1/systemone"
+	DefaultModel       = "jev-latest"
+	// OpenRouter serves the same System One contract under its own model id.
+	DefaultOpenRouterModel = "typesafe/jev-1.13"
+	// Keychain item read when no key is in the environment, so hooks work in
+	// any repository and any launcher without the key living in a dotfile.
+	keychainService = "jev-openrouter"
 )
 
-// Key reads the API key. TYPE_SAFE_AI_KEY is the name used in this project's
-// setup; the others are what the official SDKs look for, accepted so a machine
-// that already has one configured works without extra setup.
-func Key() (string, error) {
+// Backend is where requests go and what authenticates them.
+type Backend struct {
+	Name     string // "typesafe" or "openrouter"
+	Endpoint string
+	Key      string
+	Model    string
+}
+
+// Resolve picks the backend. A TypeSafe key wins when present; otherwise an
+// OpenRouter key from the environment or, on macOS, the login keychain
+// (service "jev-openrouter"). JEV_ENDPOINT and JEV_MODEL override either.
+func Resolve() (Backend, error) {
+	var b Backend
 	for _, name := range []string{"TYPE_SAFE_AI_KEY", "TYPESAFE_API_KEY", "TYPESAFE_AI_API_KEY"} {
 		if v := strings.TrimSpace(os.Getenv(name)); v != "" {
-			return v, nil
+			b = Backend{Name: "typesafe", Endpoint: typesafeEndpoint, Key: v, Model: DefaultModel}
+			break
 		}
 	}
-	return "", fmt.Errorf("no API key: set TYPE_SAFE_AI_KEY in your environment")
+	if b.Key == "" {
+		for _, name := range []string{"JEV_OPENROUTER_API_KEY", "OPENROUTER_API_KEY"} {
+			if v := strings.TrimSpace(os.Getenv(name)); v != "" {
+				b = Backend{Name: "openrouter", Endpoint: openrouterEndpoint, Key: v, Model: DefaultOpenRouterModel}
+				break
+			}
+		}
+	}
+	if b.Key == "" {
+		if v := keychainKey(); v != "" {
+			b = Backend{Name: "openrouter", Endpoint: openrouterEndpoint, Key: v, Model: DefaultOpenRouterModel}
+		}
+	}
+	if b.Key == "" {
+		return b, fmt.Errorf("no API key: set TYPE_SAFE_AI_KEY or JEV_OPENROUTER_API_KEY, " +
+			"or store an OpenRouter key with: security add-generic-password -U -a \"$USER\" -s " + keychainService + " -w")
+	}
+	if e := strings.TrimSpace(os.Getenv("JEV_ENDPOINT")); e != "" {
+		b.Endpoint = e
+	}
+	if m := strings.TrimSpace(os.Getenv("JEV_MODEL")); m != "" {
+		b.Model = m
+	}
+	return b, nil
+}
+
+func keychainKey() string {
+	if runtime.GOOS != "darwin" {
+		return ""
+	}
+	out, err := exec.Command("security", "find-generic-password", "-s", keychainService, "-w").Output()
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(out))
+}
+
+// Key reads the API key from whichever backend Resolve picks.
+func Key() (string, error) {
+	b, err := Resolve()
+	return b.Key, err
 }
 
 type Client struct {
-	key   string
-	model string
-	http  *http.Client
+	key      string
+	model    string
+	endpoint string
+	backend  string
+	http     *http.Client
 
 	// The service allows 1200 requests per minute. One request per file means a
 	// large tree can reach that, so requests are spaced rather than left to
@@ -55,17 +115,15 @@ type Client struct {
 }
 
 func New() (*Client, error) {
-	k, err := Key()
+	b, err := Resolve()
 	if err != nil {
 		return nil, err
 	}
-	model := DefaultModel
-	if m := strings.TrimSpace(os.Getenv("JEV_MODEL")); m != "" {
-		model = m
-	}
 	return &Client{
-		key:         k,
-		model:       model,
+		key:         b.Key,
+		model:       b.Model,
+		endpoint:    b.Endpoint,
+		backend:     b.Name,
 		http:        &http.Client{Timeout: 120 * time.Second},
 		minInterval: time.Minute / 1000,
 	}, nil
@@ -148,7 +206,7 @@ type apiError struct {
 func (e *apiError) Error() string {
 	switch e.status {
 	case http.StatusUnauthorized:
-		return "401 unauthorized: the API key was rejected (check TYPE_SAFE_AI_KEY)"
+		return "401 unauthorized: the API key was rejected (check TYPE_SAFE_AI_KEY, JEV_OPENROUTER_API_KEY or the jev-openrouter keychain item)"
 	case http.StatusUnprocessableEntity:
 		return fmt.Sprintf("422 the request was malformed: %s", e.body)
 	case http.StatusServiceUnavailable:
@@ -240,7 +298,7 @@ func (c *Client) do(ctx context.Context, body []byte) (*Response, error) {
 	if err := c.reserve(ctx); err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +307,7 @@ func (c *Client) do(ctx context.Context, body []byte) (*Response, error) {
 
 	httpResp, err := c.http.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("calling TypeSafe: %w", err)
+		return nil, fmt.Errorf("calling %s: %w", c.backend, err)
 	}
 	defer httpResp.Body.Close()
 
@@ -258,7 +316,7 @@ func (c *Client) do(ctx context.Context, body []byte) (*Response, error) {
 		return nil, fmt.Errorf("reading response: %w", err)
 	}
 	if c.Debug != nil {
-		fmt.Fprintf(c.Debug, "--- POST %s -> %d ---\n%s\n", endpoint, httpResp.StatusCode, raw)
+		fmt.Fprintf(c.Debug, "--- POST %s -> %d ---\n%s\n", c.endpoint, httpResp.StatusCode, raw)
 	}
 	if httpResp.StatusCode != http.StatusOK {
 		return nil, &apiError{status: httpResp.StatusCode, body: truncate(string(raw), 400)}
